@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Abrasel Zona da Mata — Relatório de Performance 90 dias</title>
+<style>
+  :root {
+    --black: #0d0d0d;
+    --white: #fafafa;
+    --gray-100: #f4f4f4;
+    --gray-200: #e8e8e8;
+    --gray-400: #aaa;
+    --gray-600: #666;
+    --gray-800: #333;
+    --accent: #c8a96e;
+    --accent-light: #f5eddf;
+    --green: #1a6b3c;
+    --green-light: #e8f5ee;
+    --border: #e2e2e2;
+    --shadow: 0 1px 3px rgba(0,0,0,0.07), 0 4px 16px rgba(0,0,0,0.04);
+    --shadow-md: 0 2px 8px rgba(0,0,0,0.08), 0 8px 32px rgba(0,0,0,0.06);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    background: var(--white);
+    color: var(--black);
+    min-height: 100vh;
+    font-size: 15px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    background: var(--black);
+    color: white;
+    padding: 48px 64px 40px;
+    position: relative;
+    overflow: hidden;
+  }
+  .header::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--accent) 0%, transparent 60%);
+  }
+  .header-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 32px;
+  }
+  .header-label {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 14px;
+  }
+  .header h1 {
+    font-size: clamp(26px, 3.5vw, 40px);
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+    color: white;
+  }
+  .header h1 span {
+    color: var(--accent);
+    font-weight: 300;
+  }
+  .header-meta {
+    text-align: right;
+    flex-shrink: 0;
+  }
+  .header-period {
+    font-size: 11px;
+    color: rgba(255,255,255,0.4);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .header-date {
+    font-size: 13px;
+    color: rgba(255,255,255,0.65);
+    font-weight: 300;
+  }
+  .header-produced {
+    font-size: 11px;
+    color: rgba(255,255,255,0.25);
+    margin-top: 8px;
+    letter-spacing: 0.05em;
+  }
+
+  /* ── LAYOUT ── */
+  .page {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 56px 64px 80px;
+  }
+
+  /* ── INTRO STRIP ── */
+  .intro-strip {
+    background: var(--gray-100);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 22px 28px;
+    margin-bottom: 48px;
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+  }
+  .intro-icon { font-size: 20px; flex-shrink: 0; margin-top: 1px; }
+  .intro-text {
+    font-size: 14px;
+    color: var(--gray-800);
+    line-height: 1.65;
+  }
+  .intro-text strong { color: var(--black); font-weight: 600; }
+
+  /* ── SECTION TITLE ── */
+  .section-header {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    margin-bottom: 24px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--border);
+  }
+  .section-header h2 {
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--black);
+  }
+  .section-header span {
+    font-size: 11px;
+    color: var(--gray-400);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .section-spacer { margin-bottom: 52px; }
+
+  /* ── KPI GRID ── */
+  .kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+  .kpi-grid-2 { grid-template-columns: repeat(2, 1fr); }
+
+  .kpi-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 26px 24px 22px;
+    box-shadow: var(--shadow);
+    transition: box-shadow 0.2s;
+  }
+  .kpi-card:hover { box-shadow: var(--shadow-md); }
+  .kpi-card.featured {
+    background: var(--black);
+    border-color: transparent;
+  }
+  .kpi-card.accent-card {
+    background: var(--accent-light);
+    border-color: #e6d4b0;
+  }
+  .kpi-card.green-card {
+    background: var(--green-light);
+    border-color: #c0dece;
+  }
+
+  .kpi-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--gray-400);
+    margin-bottom: 10px;
+  }
+  .kpi-card.featured .kpi-label { color: rgba(255,255,255,0.35); }
+  .kpi-card.accent-card .kpi-label { color: #a0845a; }
+  .kpi-card.green-card .kpi-label { color: #2d7a4f; }
+
+  .kpi-value {
+    font-size: 38px;
+    font-weight: 700;
+    letter-spacing: -0.04em;
+    line-height: 1;
+    color: var(--black);
+    margin-bottom: 10px;
+  }
+  .kpi-card.featured .kpi-value { color: white; }
+  .kpi-card.accent-card .kpi-value { color: #5c3d1a; }
+  .kpi-card.green-card .kpi-value { color: var(--green); }
+
+  .kpi-desc {
+    font-size: 12px;
+    color: var(--gray-600);
+    line-height: 1.55;
+  }
+  .kpi-card.featured .kpi-desc { color: rgba(255,255,255,0.45); }
+  .kpi-card.accent-card .kpi-desc { color: #8a6840; }
+  .kpi-card.green-card .kpi-desc { color: #1e5c38; }
+
+  /* ── CRESCIMENTO BLOCK ── */
+  .growth-block {
+    background: var(--black);
+    border-radius: 14px;
+    padding: 44px 44px 36px;
+    margin-bottom: 52px;
+    position: relative;
+    overflow: hidden;
+  }
+  .growth-block::before {
+    content: '';
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 260px; height: 260px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(200,169,110,0.1) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .growth-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 10px;
+  }
+  .growth-title {
+    font-size: clamp(20px, 2.5vw, 26px);
+    font-weight: 700;
+    color: white;
+    line-height: 1.2;
+    margin-bottom: 8px;
+    letter-spacing: -0.02em;
+  }
+  .growth-sub {
+    font-size: 13px;
+    color: rgba(255,255,255,0.45);
+    margin-bottom: 32px;
+    max-width: 580px;
+    line-height: 1.7;
+  }
+  .growth-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+  }
+  .growth-card {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 9px;
+    padding: 22px 18px;
+  }
+  .growth-num {
+    font-size: 34px;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: -0.04em;
+    line-height: 1;
+    margin-bottom: 5px;
+  }
+  .growth-num-label {
+    font-size: 11px;
+    color: rgba(255,255,255,0.55);
+    font-weight: 500;
+    letter-spacing: 0.03em;
+    margin-bottom: 10px;
+  }
+  .growth-insight {
+    font-size: 12px;
+    color: rgba(255,255,255,0.35);
+    line-height: 1.55;
+  }
+
+  /* ── FUNIL ── */
+  .funnel-section {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 52px;
+  }
+  .funnel-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 28px 24px;
+    box-shadow: var(--shadow);
+  }
+  .funnel-title {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--gray-400);
+    margin-bottom: 22px;
+  }
+  .funnel-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 13px;
+  }
+  .funnel-bar-wrap {
+    flex: 1;
+    height: 5px;
+    background: var(--gray-200);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .funnel-bar {
+    height: 100%;
+    border-radius: 3px;
+    background: var(--black);
+  }
+  .funnel-bar.green { background: var(--green); }
+  .funnel-bar.accent { background: var(--accent); }
+  .funnel-bar.light { background: #bbb; }
+  .funnel-row-label {
+    font-size: 12px;
+    color: var(--gray-800);
+    min-width: 130px;
+  }
+  .funnel-row-value {
+    font-size: 13px;
+    font-weight: 600;
+    min-width: 58px;
+    text-align: right;
+    color: var(--black);
+  }
+  .funnel-note {
+    background: var(--accent-light);
+    border: 1px solid #e6d4b0;
+    border-radius: 7px;
+    padding: 13px 15px;
+    margin-top: 18px;
+    font-size: 12px;
+    color: #6b4f2a;
+    line-height: 1.55;
+  }
+
+  /* ── PRÓXIMOS PASSOS ── */
+  .steps-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    margin-bottom: 52px;
+  }
+  .step-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 22px 20px;
+    box-shadow: var(--shadow);
+  }
+  .step-number {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--gray-200);
+    letter-spacing: -0.03em;
+    line-height: 1;
+    margin-bottom: 12px;
+  }
+  .step-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--black);
+    margin-bottom: 8px;
+    line-height: 1.35;
+    letter-spacing: -0.01em;
+  }
+  .step-text {
+    font-size: 12px;
+    color: var(--gray-600);
+    line-height: 1.6;
+  }
+  .step-tag {
+    display: inline-block;
+    margin-top: 12px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border-radius: 4px;
+    background: var(--accent-light);
+    color: #8a6840;
+  }
+  .step-tag.green { background: var(--green-light); color: #1a6b3c; }
+  .step-tag.dark { background: #eee; color: #555; }
+
+  /* ── MELHORIA CONTEÚDO ── */
+  .content-alert {
+    border: 1.5px solid #e6d4b0;
+    background: var(--accent-light);
+    border-radius: 10px;
+    padding: 28px 28px 24px;
+    margin-bottom: 52px;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 20px;
+    align-items: start;
+  }
+  .content-alert-icon {
+    font-size: 22px;
+    padding-top: 2px;
+  }
+  .content-alert-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: #5c3d1a;
+    margin-bottom: 6px;
+    letter-spacing: -0.01em;
+  }
+  .content-alert-text {
+    font-size: 13px;
+    color: #7a5630;
+    line-height: 1.65;
+  }
+  .content-alert-text strong { color: #4a2e0e; }
+
+  /* ── FOOTER ── */
+  .footer {
+    border-top: 1px solid var(--border);
+    padding-top: 28px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .footer-brand {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--black);
+  }
+  .footer-note {
+    font-size: 11px;
+    color: var(--gray-400);
+  }
+
+  @media (max-width: 900px) {
+    .page { padding: 32px 20px; }
+    .header { padding: 32px 20px; }
+    .header-inner { flex-direction: column; align-items: flex-start; }
+    .header-meta { text-align: left; }
+    .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+    .growth-grid, .steps-grid { grid-template-columns: 1fr; }
+    .funnel-section { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-inner">
+    <div>
+      <div class="header-label">Abrasel Zona da Mata — Relatório de Performance Instagram</div>
+      <h1>90 dias de resultados.<br><span>Uma audiência que está crescendo.</span></h1>
+    </div>
+    <div class="header-meta">
+      <div class="header-period">Período analisado</div>
+      <div class="header-date">01 de março → 29 de maio de 2026</div>
+      <div class="header-produced">Produzido por Format Agência</div>
+    </div>
+  </div>
+</header>
+
+<div class="page">
+
+  <!-- INTRO -->
+  <div class="intro-strip">
+    <div class="intro-icon">📊</div>
+    <div class="intro-text">
+      Este relatório apresenta o desempenho do Instagram da Abrasel Zona da Mata nos últimos 90 dias e identifica, com base nesses dados, <strong>oportunidades concretas para o time comercial</strong> — com sugestões práticas de abordagem e pontos de melhoria no conteúdo para potencializar ainda mais os resultados.
+    </div>
+  </div>
+
+  <!-- SEÇÃO 1: NÚMEROS DOS 90 DIAS -->
+  <div class="section-spacer">
+    <div class="section-header">
+      <h2>Desempenho dos últimos 90 dias</h2>
+      <span>Orgânico + Pago · Instagram</span>
+    </div>
+    <div class="kpi-grid">
+      <div class="kpi-card featured">
+        <div class="kpi-label">Visualizações totais</div>
+        <div class="kpi-value">315,9 mil</div>
+        <p class="kpi-desc">Mais de 300 mil impressões para a marca Abrasel na região — todo esse alcance construído com consistência editorial.</p>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Alcance (pessoas únicas)</div>
+        <div class="kpi-value">177,5 mil</div>
+        <p class="kpi-desc">177 mil pessoas distintas viram o conteúdo da Abrasel. Uma parcela relevante são empresários do food service da região.</p>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Interações com conteúdo</div>
+        <div class="kpi-value">24,8 mil</div>
+        <p class="kpi-desc">Curtidas, comentários e salvamentos — 24 mil gestos ativos de interesse e identificação com o conteúdo da Abrasel.</p>
+      </div>
+    </div>
+    <div class="kpi-grid kpi-grid-2" style="margin-top:0">
+      <div class="kpi-card accent-card">
+        <div class="kpi-label">Visualizações orgânicas</div>
+        <div class="kpi-value">298,3 mil</div>
+        <p class="kpi-desc">94% das visualizações são fruto de conteúdo orgânico — resultado direto de produção consistente, sem depender de verba publicitária.</p>
+      </div>
+      <div class="kpi-card green-card">
+        <div class="kpi-label">Visualizações de anúncios</div>
+        <div class="kpi-value">17,5 mil</div>
+        <p class="kpi-desc">Canal de tráfego pago ativado neste período. A partir de agora, o alcance pago complementa o orgânico, ampliando o alcance da marca.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- SEÇÃO 2: CRESCIMENTO REAL -->
+  <div class="growth-block">
+    <div class="growth-label">📈 Indicadores de Crescimento</div>
+    <div class="growth-title">As métricas que mais importam estão todas subindo</div>
+    <div class="growth-sub">Visitas ao perfil, novos seguidores e cliques no link — os indicadores que refletem intenção real de conhecer a Abrasel — cresceram de forma expressiva neste período.</div>
+    <div class="growth-grid">
+      <div class="growth-card">
+        <div class="growth-num">619</div>
+        <div class="growth-num-label">Novos seguidores · +16,8%</div>
+        <div class="growth-insight">Empresários do setor que escolheram acompanhar a Abrasel ativamente — cada um deles é um contato com potencial de associação.</div>
+      </div>
+      <div class="growth-card">
+        <div class="growth-num">2.100</div>
+        <div class="growth-num-label">Visitas ao perfil · +112,7%</div>
+        <div class="growth-insight">Mais do que dobrou. São empresários que foram até o perfil para entender o que a Abrasel oferece — um sinal claro de interesse.</div>
+      </div>
+      <div class="growth-card">
+        <div class="growth-num">551</div>
+        <div class="growth-num-label">Cliques no link da bio · +9.100%</div>
+        <div class="growth-insight">Crescimento expressivo de pessoas que quiseram saber mais além do Instagram — demonstrando intenção ativa de aprofundamento.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SEÇÃO 3: FUNIL -->
+  <div class="section-header">
+    <h2>Do alcance à oportunidade</h2>
+    <span>Como a audiência se movimenta no funil</span>
+  </div>
+  <div class="funnel-section">
+    <div class="funnel-card">
+      <div class="funnel-title">Jornada do seguidor</div>
+      <div class="funnel-row">
+        <div class="funnel-row-label">Alcance total</div>
+        <div class="funnel-bar-wrap"><div class="funnel-bar" style="width:100%"></div></div>
+        <div class="funnel-row-value">177,5k</div>
+      </div>
+      <div class="funnel-row">
+        <div class="funnel-row-label">Interações</div>
+        <div class="funnel-bar-wrap"><div class="funnel-bar light" style="width:14%"></div></div>
+        <div class="funnel-row-value">24,8k</div>
+      </div>
+      <div class="funnel-row">
+        <div class="funnel-row-label">Visitas ao perfil</div>
+        <div class="funnel-bar-wrap"><div class="funnel-bar accent" style="width:1.2%"></div></div>
+        <div class="funnel-row-value">2.100</div>
+      </div>
+      <div class="funnel-row">
+        <div class="funnel-row-label">Novos seguidores</div>
+        <div class="funnel-bar-wrap"><div class="funnel-bar green" style="width:0.35%"></div></div>
+        <div class="funnel-row-value">619</div>
+      </div>
+      <div class="funnel-note">
+        De 177 mil pessoas alcançadas, 619 decidiram seguir a Abrasel. São empresários que agora recebem o conteúdo da entidade regularmente em seu feed — um canal de relacionamento direto e contínuo.
+      </div>
+    </div>
+    <div class="funnel-card">
+      <div class="funnel-title">Crescimento período a período</div>
+      <div class="funnel-row">
+        <div class="funnel-row-label">Visitas ao perfil</div>
+        <div class="funnel-bar-wrap"><div class="funnel-bar green" style="width:100%"></div></div>
+        <div class="funnel-row-value">+112,7%</div>
+      </div>
+      <div class="funnel-row">
+        <div class="funnel-row-label">Cliques no link</div>
+        <div class="funnel-bar-wrap"><div class="funnel-bar green" style="width:85%"></div></div>
+        <div class="funnel-row-value">+9.100%</div>
+      </div>
+      <div class="funnel-row">
+        <div class="funnel-row-label">Novos seguidores</div>
+        <div class="funnel-bar-wrap"><div class="funnel-bar accent" style="width:16%"></div></div>
+        <div class="funnel-row-value">+16,8%</div>
+      </div>
+      <div class="funnel-row">
+        <div class="funnel-row-label">Viz. de anúncios</div>
+        <div class="funnel-bar-wrap"><div class="funnel-bar" style="width:100%"></div></div>
+        <div class="funnel-row-value">Novo canal</div>
+      </div>
+      <div class="funnel-note">
+        Os indicadores de fundo de funil — aqueles que refletem intenção real — estão todos em crescimento. O perfil está atraindo mais atenção qualificada a cada mês.
+      </div>
+    </div>
+  </div>
+
+  <!-- SEÇÃO 4: OPORTUNIDADE COMERCIAL -->
+  <div class="section-spacer">
+    <div class="section-header">
+      <h2>Oportunidade para o time comercial</h2>
+      <span>Como trabalhar essa audiência</span>
+    </div>
+    <div class="steps-grid">
+      <div class="step-card">
+        <div class="step-number">01</div>
+        <div class="step-title">Identificar e qualificar os novos seguidores</div>
+        <div class="step-text">A cada semana, novos empresários passam a seguir o perfil. Vale revisar esses perfis regularmente: quem é essa pessoa? É do food service? Já é associado? Tem perfil para uma abordagem consultiva?</div>
+        <span class="step-tag green">Principal prioridade</span>
+      </div>
+      <div class="step-card">
+        <div class="step-number">02</div>
+        <div class="step-title">Convidar para o WhatsApp de forma natural</div>
+        <div class="step-text">Quem segue e interage tem afinidade com a Abrasel. Uma mensagem direta, leve e consultiva — apresentando os benefícios e convidando para uma conversa no WhatsApp — tem grandes chances de receptividade.</div>
+        <span class="step-tag green">Ação comercial direta</span>
+      </div>
+      <div class="step-card">
+        <div class="step-number">03</div>
+        <div class="step-title">Aproveitar os picos de engajamento</div>
+        <div class="step-text">Posts com alto desempenho geram janelas de atenção e reconhecimento. Nos dias seguintes a uma publicação de destaque, o momento é ideal para o comercial entrar em contato — o nome da Abrasel está fresco na memória.</div>
+        <span class="step-tag">Timing estratégico</span>
+      </div>
+      <div class="step-card">
+        <div class="step-number">04</div>
+        <div class="step-title">Monitorar quem interage com os posts</div>
+        <div class="step-text">Curtidas, comentários e salvamentos são sinais de interesse ativo. Perfis que interagem de forma recorrente merecem atenção especial do comercial — são os mais propensos a uma conversa sobre associação.</div>
+        <span class="step-tag">Monitoramento contínuo</span>
+      </div>
+      <div class="step-card">
+        <div class="step-number">05</div>
+        <div class="step-title">Usar o Instagram como âncora de credibilidade</div>
+        <div class="step-text">Ao abordar um prospect, mencionar o perfil reforça a presença da Abrasel. Muitos já terão visto o conteúdo — isso encurta o caminho até a confiança e torna a conversa comercial mais natural.</div>
+        <span class="step-tag dark">Apoio à abordagem</span>
+      </div>
+      <div class="step-card">
+        <div class="step-number">06</div>
+        <div class="step-title">Registrar conversões originadas do digital</div>
+        <div class="step-text">Manter um registro de quais associações foram originadas por contato com o perfil permite entender o retorno real do marketing e orientar investimentos futuros de forma mais precisa.</div>
+        <span class="step-tag dark">Gestão de dados</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- SEÇÃO 5: PONTO DE MELHORIA CONTEÚDO -->
+  <div class="section-header">
+    <h2>Ponto de melhoria: conteúdo comercial</h2>
+    <span>Oportunidade ainda não explorada</span>
+  </div>
+  <div class="content-alert">
+    <div class="content-alert-icon">💡</div>
+    <div>
+      <div class="content-alert-title">Em meio ao crescimento do perfil, o conteúdo comercial direto ainda não foi colocado em prática</div>
+      <div class="content-alert-text">
+        O perfil tem construído presença, autoridade e audiência — e está fazendo isso muito bem. Mas há uma etapa que ainda está pendente: <strong>publicações que falem diretamente sobre os benefícios de ser associado à Abrasel.</strong><br><br>
+        Com 619 novos seguidores e 2.100 visitas ao perfil nos últimos 90 dias, existe uma audiência qualificada que ainda não recebeu uma mensagem clara sobre o que a Abrasel oferece a quem se associa. Conteúdos como <em>"5 vantagens de ser associado"</em>, depoimentos de associados, ou posts explicando os serviços da entidade transformam interesse em intenção — e facilitam muito o trabalho do comercial.<br><br>
+        <strong>A sugestão é que os próximos conteúdos incluam esse formato dentro do calendário editorial já estabelecido.</strong>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <div class="footer-brand">Format Agência</div>
+    <div class="footer-note">Relatório gerado em 29 de maio de 2026 · Dados: Meta Business Suite · Abrasel Zona da Mata</div>
+  </div>
+
+</div>
+</body>
+</html>
